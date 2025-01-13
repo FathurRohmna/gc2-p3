@@ -1,0 +1,293 @@
+basePath: /
+definitions:
+  pb.BookResponse:
+    properties:
+      author:
+        type: string
+      id:
+        type: string
+      published_date:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  pb.BorrowedBookResponse:
+    properties:
+      book_id:
+        type: string
+      borrowed_date:
+        type: string
+      id:
+        type: string
+      return_date:
+        type: string
+      user_id:
+        type: string
+    type: object
+  pb.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  pb.RegisterResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  web.BorrowBookRequest:
+    properties:
+      book_id:
+        type: string
+      borrowed_date:
+        type: string
+      user_id:
+        type: string
+    required:
+    - book_id
+    - user_id
+    type: object
+  web.LoginUserRequest:
+    properties:
+      password:
+        example: example_password
+        minLength: 8
+        type: string
+      username:
+        example: john.doe
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  web.RegisterBookRequest:
+    properties:
+      author:
+        type: string
+      published_date:
+        type: string
+      title:
+        type: string
+    required:
+    - author
+    - title
+    type: object
+  web.RegisterUserRequest:
+    properties:
+      password:
+        example: example_password
+        minLength: 8
+        type: string
+      username:
+        example: johndoe
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  web.ReturnBookRequest:
+    properties:
+      book_id:
+        type: string
+      return_date:
+        type: string
+      user_id:
+        type: string
+    required:
+    - book_id
+    - user_id
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is the API for planet.
+  termsOfService: http://swagger.io/terms/
+  title: Exoplanet API
+  version: "1.0"
+paths:
+  /books/borrow:
+    post:
+      consumes:
+      - application/json
+      description: Borrow a book by providing book ID, user ID, and borrowed date
+      parameters:
+      - description: Borrow Book Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/web.BorrowBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Book borrowed successfully
+          schema:
+            $ref: '#/definitions/pb.BorrowedBookResponse'
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Borrow a book
+      tags:
+      - books
+  /books/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new book with title, author, and published date
+      parameters:
+      - description: Register Book Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/web.RegisterBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Book registered successfully
+          schema:
+            $ref: '#/definitions/pb.BookResponse'
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Register a new book
+      tags:
+      - books
+  /books/return:
+    post:
+      consumes:
+      - application/json
+      description: Return a book by providing book ID, user ID, and return date
+      parameters:
+      - description: Return Book Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/web.ReturnBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Book returned successfully
+          schema:
+            $ref: '#/definitions/pb.BorrowedBookResponse'
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Return a book
+      tags:
+      - books
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login an existing user using username and password
+      parameters:
+      - description: Login User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/web.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/pb.LoginResponse'
+        "401":
+          description: Invalid credentials
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login an existing user
+      tags:
+      - user
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with username and password
+      parameters:
+      - description: Register User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/web.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User registered successfully
+          schema:
+            $ref: '#/definitions/pb.RegisterResponse'
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - user
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
